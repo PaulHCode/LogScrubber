@@ -1,8 +1,6 @@
 ﻿# Description
 
-Insert a useful description for the LogScrubber project here.
-
-Remember, it's the first thing a visitor will see.
+Log scrubber is a tool to remove unwanted data from logs including IP addresses, words on a bad word list, or other problematic data.
 
 # Project Setup Instructions
 ## Working with the layout
