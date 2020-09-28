@@ -1,0 +1,11 @@
+﻿TOPIC
+	about_LogScrubber
+	
+SHORT DESCRIPTION
+	Explains how to use the LogScrubber powershell module
+	
+LONG DESCRIPTION
+	<Insert Content here>
+
+KEYWORDS
+	LogScrubber
