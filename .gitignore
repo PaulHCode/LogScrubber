@@ -1,0 +1,22 @@
+﻿
+# ignore the settings folder and files for VSCode and PSS
+.vscode/*
+*.psproj
+*TempPoint*
+
+# Ignore staging info from Visual Studio
+library/LogScrubber/.vs/*
+library/LogScrubber/LogScrubber/bin/*
+library/LogScrubber/LogScrubber/obj/*
+
+# ignore PowerShell Studio MetaData
+LogScrubber/LogScrubber.psproj
+LogScrubber/LogScrubber.psproj.bak
+LogScrubber/LogScrubber.psprojs
+LogScrubber/LogScrubber.psproj
+
+# ignore the TestResults
+TestResults/*
+
+# ignore the publishing Directory
+publish/*

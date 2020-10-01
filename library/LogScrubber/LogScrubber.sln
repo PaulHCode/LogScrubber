@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{4A83A273-3287-4FF6-9E7B-C2366767DA70}") = "LogScrubber", "LogScrubber\LogScrubber.csproj", "{02334AD1-8A4B-4A93-AD8D-8F4942A59BA4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{02334AD1-8A4B-4A93-AD8D-8F4942A59BA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02334AD1-8A4B-4A93-AD8D-8F4942A59BA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02334AD1-8A4B-4A93-AD8D-8F4942A59BA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02334AD1-8A4B-4A93-AD8D-8F4942A59BA4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {39ACE9B4-DA9F-4B56-BE27-D697F8FD4F7F}
+	EndGlobalSection
+EndGlobal
