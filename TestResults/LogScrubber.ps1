@@ -40,127 +40,128 @@ $IPRegex = ‘\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b’
 #    $IPListFile = $LogFileName + "-IPs"
 #    If(Test-Path $IPListFile){rm -Force $IPListFile} #should probably be nice and ask first
 
-Function Invoke-LSScrub{
+Function Invoke-LSScrub {
     Param
     (
         # LogFileName The path and name of the log file to scrub
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$true,
-                   Position=0)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $true,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [Alias("N")] 
         $LogFileName,
-        [Parameter(Mandatory=$false, 
-                   ValueFromPipeline=$false,
-                   Position=1)]
+        [Parameter(Mandatory = $false, 
+            ValueFromPipeline = $false,
+            Position = 1)]
         [Alias("Bad")] 
         $BadWordFile
     )
     
     Invoke-LSIPScrub -LogFileName $LogFileName
-    If(Test-Path $BadWordFile){
-        Invoke-LSBadWordScrub -LogFileName ($LogFileName+"-IPScrubbed") -BadWordFile $BadWordFile -BadWordKeyFile ($LogFileName+"-BadWordKey") -OriginalLogFileName $LogFileName
+    If (Test-Path $BadWordFile) {
+        Invoke-LSBadWordScrub -LogFileName ($LogFileName + "-IPScrubbed") -BadWordFile $BadWordFile -BadWordKeyFile ($LogFileName + "-BadWordKey") -OriginalLogFileName $LogFileName
         Write-Host "BadWord KeyFile: $LogFileName-BadWordKey"
         Write-Host "Scrubbed Log: $LogFileName-Scrubbed"
-    }Else{
+    }
+    Else {
         Write-Host "No BadWordFile entered or file does not exist, only IPs scrubbed, not bad words."
         Write-Host "Log file with only IPs scrubbed: $LogFileName-IPScrubbed"        
     }
 
 }
 
-Function Clear-LSScrubFiles{
+Function Clear-LSScrubFiles {
     Param(
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$true,
-                   Position=0)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $true,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [Alias("N")] 
         $LogFileName
     )
-    rm -Force ($LogFileName+"-IPScrubbed"),($LogFileName+"-IPScrubbed-Scrubbed"),($LogFileName+"-IPsKey"),($LogFileName+"-BadWordKey"),($LogFileName+"-Scrubbed") -ea 0
+    Remove-Item -Force ($LogFileName + "-IPScrubbed"), ($LogFileName + "-IPScrubbed-Scrubbed"), ($LogFileName + "-IPsKey"), ($LogFileName + "-BadWordKey"), ($LogFileName + "-Scrubbed") -ea 0
 }
 
-Function Invoke-LSIPScrub{
+Function Invoke-LSIPScrub {
     Param
     (
         # LogFileName The path and name of the log file to scrub
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$true,
-                   Position=0)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $true,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [Alias("N")] 
         $LogFileName
     )
 
     Find-LSIPs -LogFileName $LogFileName
-    New-LSIPs -IPList ($LogFileName+"-IPs")
-    Set-LSIPs -LogFile $LogFileName -IPKeyList ($LogFileName+"-IPsKey")
+    New-LSIPs -IPList ($LogFileName + "-IPs")
+    Set-LSIPs -LogFile $LogFileName -IPKeyList ($LogFileName + "-IPsKey")
     
     Write-Host "Original Log: $LogFileName"
-    Write-Host "IP Key: " ($LogFileName+"-IPsKey")
+    Write-Host "IP Key: " ($LogFileName + "-IPsKey")
     #Write-Host "Scrubbed Log: " ($LogFileName+"-IPScrubbed")
 }
 
-Function Invoke-LSBadWordScrub{
+Function Invoke-LSBadWordScrub {
     Param
     (
         # LogFileName The path and name of the log file to scrub
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$true,
-                   Position=0)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $true,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [Alias("N")] 
         $LogFileName,
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$false,
-                   Position=1)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $false,
+            Position = 1)]
         [ValidateNotNullOrEmpty()]
         [Alias("Bad")] 
         $BadWordFile,
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$false,
-                   Position=2)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $false,
+            Position = 2)]
         [ValidateNotNullOrEmpty()]
         [Alias("BadKey")] 
         $BadWordKeyFile,
-        [Parameter(Mandatory=$true,
-                    ValueFromPipeline=$false,
-                    Position=3)]
+        [Parameter(Mandatory = $true,
+            ValueFromPipeline = $false,
+            Position = 3)]
         [ValidateNotNullOrEmpty()]
         $OriginalLogFileName
     )
 
     Find-LSBadWords -LogFileName $LogFileName -BadWordFile $BadWordFile -BadWordKeyFile $BadWordKeyFile
     New-LSBadWords -LogFileName $LogFileName -BadWordFile $BadWordFile -BadWordKeyFile $BadWordKeyFile
-    Set-LSBadWords -LogFile $LogFileName -BadWordsKeyList $BadWordKeyFile -BadWordKeyFile $BadWordKeyFile -OutputFileName ($OriginalLogFileName+"-Scrubbed")
+    Set-LSBadWords -LogFile $LogFileName -BadWordsKeyList $BadWordKeyFile -BadWordKeyFile $BadWordKeyFile -OutputFileName ($OriginalLogFileName + "-Scrubbed")
 
 
 }
 
 
-Function Find-LSIPs{
+Function Find-LSIPs {
     Param
     (
         # LogFileName The path and name of the log file to scrub
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$true,
-                   Position=0)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $true,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [Alias("N")] 
         $LogFileName
     )
     $IPListFile = $LogFileName + "-IPs"
-    ((select-string -Path $LogFileName -Pattern $IPRegex -AllMatches).Matches).Value | select @{N="IP";E={$_}} -Unique | Export-Csv $IPListFile -NoTypeInformation  #Out-File $IPListFile
+    ((select-string -Path $LogFileName -Pattern $IPRegex -AllMatches).Matches).Value | Select-Object @{N = "IP"; E = { $_ } } -Unique | Export-Csv $IPListFile -NoTypeInformation  #Out-File $IPListFile
 }
 
-Function New-LSIPs{
+Function New-LSIPs {
     Param
     (
         # IPList The list of IPs
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$true,
-                   Position=0)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $true,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [Alias("I")] 
         $IPList
@@ -168,100 +169,100 @@ Function New-LSIPs{
     #include options for different formats of fake IPs
     
     #this could be made more efficient for larger files
-    $RequiredLength = ((gc $IPList | measure -Line).Lines).ToString().Length
-    $formatter = "{0:d"+$FakeIPLength+"}"
-    $FakeIPList = $IPList+"Key"
+    $RequiredLength = ((Get-Content $IPList | Measure-Object -Line).Lines).ToString().Length
+    $formatter = "{0:d" + $FakeIPLength + "}"
+    $FakeIPList = $IPList + "Key"
     $IPNum = 0
-    If(Test-Path $FakeIPList){rm $FakeIPList}
+    If (Test-Path $FakeIPList) { Remove-Item $FakeIPList }
 
     'IP,FakeIP' | Out-File $FakeIPList
     Import-Csv $IPList | ForEach-Object {
         Add-Member -MemberType NoteProperty -InputObject $_ -Name FakeIP -Value ("<FakeIP{0:d$($RequiredLength)}>" -f $IPNum) -PassThru
         $IPNum++
     } | Export-Csv $FakeIPList -Force -NoTypeInformation
-    rm $IPList
+    Remove-Item $IPList
 }
 
-Function Set-LSIPs{
+Function Set-LSIPs {
     Param
     (
         # LogFile The log to scrub
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$true,
-                   Position=0)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $true,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         $LogFile,
         # IPKeyList The list of IPs and fake IPs
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$true,
-                   Position=0)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $true,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         $IPKeyList
     )
-    If(Test-Path ($LogFile+"-IPScrubbed")){rm ($LogFile+"-IPScrubbed")}
+    If (Test-Path ($LogFile + "-IPScrubbed")) { Remove-Item ($LogFile + "-IPScrubbed") }
 
-    $LogFileContents = gc $LogFile
-    ForEach($line in (Import-Csv $IPKeyList)){
-        $LogFileContents = $LogFileContents.Replace($line.IP,$Line.FakeIP)
+    $LogFileContents = Get-Content $LogFile
+    ForEach ($line in (Import-Csv $IPKeyList)) {
+        $LogFileContents = $LogFileContents.Replace($line.IP, $Line.FakeIP)
     }
-    $LogFileContents | Out-File ($LogFile+"-IPScrubbed")
+    $LogFileContents | Out-File ($LogFile + "-IPScrubbed")
 }
 
 
-Function Find-LSBadWords{
+Function Find-LSBadWords {
     Param
     (
         # LogFileName The path and name of the log file to scrub
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$true,
-                   Position=0)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $true,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [Alias("N")] 
         $LogFileName,
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$false,
-                   Position=1)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $false,
+            Position = 1)]
         [ValidateNotNullOrEmpty()]
         [Alias("Bad")] 
         $BadWordFile,
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$false,
-                   Position=2)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $false,
+            Position = 2)]
         [ValidateNotNullOrEmpty()]
         [Alias("BadKey")] 
         $BadWordKeyFile
     )
-#    If(Test-Path ($LogFileName+"-BadWords")){rm ($LogFileName+"-BadWords") -Force}
-    If(Test-Path $BadWordKeyFile){rm $BadWordKeyFile -Force}
+    #    If(Test-Path ($LogFileName+"-BadWords")){rm ($LogFileName+"-BadWords") -Force}
+    If (Test-Path $BadWordKeyFile) { Remove-Item $BadWordKeyFile -Force }
 
     #$LogFileContents = gc $LogFileName
     $BadWords = @()
     #Import-Csv $BadWordFile -Header "Word"| % {$BadWords+=$_}
-    gc $BadWordFile | %{$BadWords += $_}
+    Get-Content $BadWordFile | ForEach-Object { $BadWords += $_ }
     #Write-Host "bad words"
     #$BadWords
-    ((gc $LogFileName | Select-String $BadWords -AllMatches).Matches).Value | select @{N="BadWord";E={$_}} -Unique | Export-Csv ($BadWordKeyFile <#$LogFileName+"-BadWords"#>) -NoTypeInformation
+    ((Get-Content $LogFileName | Select-String $BadWords -AllMatches).Matches).Value | Select-Object @{N = "BadWord"; E = { $_ } } -Unique | Export-Csv ($BadWordKeyFile <#$LogFileName+"-BadWords"#>) -NoTypeInformation
 }
 
-Function New-LSBadWords{
+Function New-LSBadWords {
     Param
     (
         # LogFileName The path and name of the log file to scrub
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$true,
-                   Position=0)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $true,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [Alias("N")] 
         $LogFileName,
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$false,
-                   Position=1)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $false,
+            Position = 1)]
         [ValidateNotNullOrEmpty()]
         [Alias("Bad")] 
         $BadWordFile,
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$false,
-                   Position=2)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $false,
+            Position = 2)]
         [ValidateNotNullOrEmpty()]
         [Alias("BadKey")] 
         $BadWordKeyFile
@@ -269,16 +270,16 @@ Function New-LSBadWords{
     #include options for different formats of fake bad words
     
     #this could be made more efficient for larger files
-    $RequiredLength = ((gc $BadWordFile | measure -Line).Lines).ToString().Length
-    $formatter = "{0:d"+$FakeIPLength+"}"
+    $RequiredLength = ((Get-Content $BadWordFile | Measure-Object -Line).Lines).ToString().Length
+    $formatter = "{0:d" + $FakeIPLength + "}"
     #$BadWordKey = $LogFileName+"-BadWordKey"
     $BadWordNum = 0
     #If(Test-Path $BadWordKey){rm $BadWordKey}
-    If(Test-Path $BadWordKeyFile){rm $BadWordKeyFile}
+    If (Test-Path $BadWordKeyFile) { Remove-Item $BadWordKeyFile }
 
     #'BadWord,FakeBadWord' | Out-File $BadWordKey
     'BadWord,FakeBadWord' | Out-File $BadWordKeyFile
-    Import-Csv $BadWordFile | ForEach {
+    Import-Csv $BadWordFile | ForEach-Object {
         #write-host $_
         Add-Member -MemberType NoteProperty -InputObject $_ -Name FakeBadWord -Value ("<FakeBadWord{0:d$($RequiredLength)}>" -f $BadWordNum) -PassThru
         $BadWordNum++
@@ -292,40 +293,40 @@ Function New-LSBadWords{
 }
 
 
-Function Set-LSBadWords{
+Function Set-LSBadWords {
     Param
     (
         # LogFile The log to scrub
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$true,
-                   Position=0)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $true,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         $LogFile,
         # IPKeyList The list of IPs and fake IPs
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$true,
-                   Position=0)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $true,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         $BadWordsKeyList,
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$false,
-                   Position=2)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $false,
+            Position = 2)]
         [ValidateNotNullOrEmpty()]
         [Alias("BadKey")] 
         $BadWordKeyFile,
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$false,
-                   Position=2)]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $false,
+            Position = 2)]
         [ValidateNotNullOrEmpty()]
         [Alias("O")] 
         $OutputFileName
     )
     #If(Test-Path ($LogFile+"-BadWordScrubbed")){rm ($LogFile+"-BadWordScrubbed")}
-    If(Test-Path $OutputFileName){rm $OutputFileName}
+    If (Test-Path $OutputFileName) { Remove-Item $OutputFileName }
     #If(Test-Path $BadWordKeyFile){rm $BadWordKeyFile}
 
-    $LogFileContents = gc $LogFile
-    ForEach($line in (Import-Csv $BadWordKeyFile)){
+    $LogFileContents = Get-Content $LogFile
+    ForEach ($line in (Import-Csv $BadWordKeyFile)) {
         #Write-Host $Line
         #$LogFileContents = $LogFileContents.Replace($line.BadWord,$Line.FakeBadWord)
         $LogFileContents = $LogFileContents -Replace $line.BadWord, $Line.FakeBadWord
@@ -356,59 +357,54 @@ Function Set-LSBadWords{
 .FUNCTIONALITY
    The functionality that best describes this cmdlet
 #>
-function Get-LSIPs
-{
-    [CmdletBinding(DefaultParameterSetName='Parameter Set 1', 
-                  SupportsShouldProcess=$true, 
-                  PositionalBinding=$false,
-                  HelpUri = 'http://www.microsoft.com/',
-                  ConfirmImpact='Medium')]
+function Get-LSIPs {
+    [CmdletBinding(DefaultParameterSetName = 'Parameter Set 1', 
+        SupportsShouldProcess = $true, 
+        PositionalBinding = $false,
+        HelpUri = 'http://www.microsoft.com/',
+        ConfirmImpact = 'Medium')]
     [Alias()]
     [OutputType([String])]
     Param
     (
         # Param1 help description
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipeline=$true,
-                   ValueFromPipelineByPropertyName=$true, 
-                   ValueFromRemainingArguments=$false, 
-                   Position=0,
-                   ParameterSetName='Parameter Set 1')]
+        [Parameter(Mandatory = $true, 
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true, 
+            ValueFromRemainingArguments = $false, 
+            Position = 0,
+            ParameterSetName = 'Parameter Set 1')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        [ValidateCount(0,5)]
+        [ValidateCount(0, 5)]
         [ValidateSet("sun", "moon", "earth")]
         [Alias("p1")] 
         $Param1,
 
         # Param2 help description
-        [Parameter(ParameterSetName='Parameter Set 1')]
+        [Parameter(ParameterSetName = 'Parameter Set 1')]
         [AllowNull()]
         [AllowEmptyCollection()]
         [AllowEmptyString()]
-        [ValidateScript({$true})]
-        [ValidateRange(0,5)]
+        [ValidateScript( { $true })]
+        [ValidateRange(0, 5)]
         [int]
         $Param2,
 
         # Param3 help description
-        [Parameter(ParameterSetName='Another Parameter Set')]
+        [Parameter(ParameterSetName = 'Another Parameter Set')]
         [ValidatePattern("[a-z]*")]
-        [ValidateLength(0,15)]
+        [ValidateLength(0, 15)]
         [String]
         $Param3
     )
 
-    Begin
-    {
+    Begin {
     }
-    Process
-    {
-        if ($pscmdlet.ShouldProcess("Target", "Operation"))
-        {
+    Process {
+        if ($pscmdlet.ShouldProcess("Target", "Operation")) {
         }
     }
-    End
-    {
+    End {
     }
 }
