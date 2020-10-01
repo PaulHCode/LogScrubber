@@ -1,6 +1,7 @@
 Function Find-LSIPs {
     <#
 .SYNOPSIS
+Finds all IPs in $LogFileName and outputs them as a list to $LogFileName-IPs
 .DESCRIPTION
 .PARAMETER ScriptBlock
 .PARAMETER LogFileName
@@ -18,8 +19,7 @@ Function Find-LSIPs {
         [Parameter(Mandatory = $true, 
             ValueFromPipeline = $true,
             Position = 0)]
-        [ValidateNotNullOrEmpty()]
-        [Alias("N")] 
+        [ValidateNotNullOrEmpty()] 
         $LogFileName
     )
     $IPListFile = $LogFileName + "-IPs"

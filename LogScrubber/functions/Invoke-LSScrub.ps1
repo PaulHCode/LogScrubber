@@ -19,12 +19,10 @@ Function Invoke-LSScrub {
             ValueFromPipeline = $true,
             Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [Alias("N")] 
         $LogFileName,
         [Parameter(Mandatory = $false, 
             ValueFromPipeline = $false,
             Position = 1)]
-        [Alias("Bad")] 
         $BadWordFile
     )
     

@@ -25,19 +25,16 @@ The path\name to output the BadWordKeyFile to
             ValueFromPipeline = $true,
             Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [Alias("N")] 
         $LogFileName,
         [Parameter(Mandatory = $true, 
             ValueFromPipeline = $false,
             Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [Alias("Bad")] 
         $BadWordFile,
         [Parameter(Mandatory = $true, 
             ValueFromPipeline = $false,
             Position = 2)]
         [ValidateNotNullOrEmpty()]
-        [Alias("BadKey")] 
         $BadWordKeyFile
     )
     #include options for different formats of fake bad words

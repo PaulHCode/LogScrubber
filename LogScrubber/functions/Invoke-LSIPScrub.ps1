@@ -1,12 +1,18 @@
-
-
 Function Invoke-LSIPScrub {
     <#
 .SYNOPSIS
+Scrubs the IPs from $LogFileName
 .DESCRIPTION
-.PARAMETER ScriptBlock
+This command generates a list of IPs in the log file as well as a list 
+of fake IPs associated with them then outputs a copy of a log file with 
+the IPs replaced with the fake IPs.  
+
+If an IP appears multiple times in the log file then it is replaced with
+the same fake IP each time.
 .PARAMETER LogFileName
+The name of the log file to scrub.
 .EXAMPLE
+    Invoke-LSIPScrub -LogFileName MyLog.txt
 .EXAMPLE
 .INPUTS
     [string]
@@ -28,7 +34,7 @@ Function Invoke-LSIPScrub {
     New-LSIPs -IPList ($LogFileName + "-IPs")
     Set-LSIPs -LogFile $LogFileName -IPKeyList ($LogFileName + "-IPsKey")
     
-    Write-Host "Original Log: $LogFileName"
-    Write-Host "IP Key: " ($LogFileName + "-IPsKey")
-    #Write-Host "Scrubbed Log: " ($LogFileName+"-IPScrubbed")
+    Write-Verbose "Original Log: $LogFileName"
+    Write-Verbose "IP Key: " ($LogFileName + "-IPsKey")
+    Write-Verbose "Scrubbed Log: " ($LogFileName + "-IPScrubbed")
 }

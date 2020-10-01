@@ -1,10 +1,12 @@
-
 Function Set-LSIPs {
     <#
 .SYNOPSIS
+Replaces the IPs in $LogFile with the Fake IPs in $IPKeyList then outputs the result to $LogFile-IPScrubbed
 .DESCRIPTION
-.PARAMETER ScriptBlock
-.PARAMETER LogFileName
+.PARAMETER LogFile
+The name of the unmodified log file
+.PARAMETER IPKeyList
+The name of the unmodified IPKeyList
 .EXAMPLE
 .EXAMPLE
 .INPUTS

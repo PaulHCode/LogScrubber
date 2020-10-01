@@ -38,13 +38,11 @@ The path\name to output the BadWordKeyFile to
             ValueFromPipeline = $false,
             Position = 2)]
         [ValidateNotNullOrEmpty()]
-        [Alias("BadKey")] 
         $BadWordKeyFile,
         [Parameter(Mandatory = $true, 
             ValueFromPipeline = $false,
             Position = 2)]
         [ValidateNotNullOrEmpty()]
-        [Alias("O")] 
         $OutputFileName
     )
     #If(Test-Path ($LogFile+"-BadWordScrubbed")){rm ($LogFile+"-BadWordScrubbed")}

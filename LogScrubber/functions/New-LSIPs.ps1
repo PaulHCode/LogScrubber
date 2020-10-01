@@ -1,6 +1,7 @@
 Function New-LSIPs {
     <#
 .SYNOPSIS
+Generates a list of Fake IPs to match with each IP taken out of the log file
 .DESCRIPTION
 .PARAMETER ScriptBlock
 .PARAMETER LogFileName
@@ -19,14 +20,13 @@ Function New-LSIPs {
             ValueFromPipeline = $true,
             Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [Alias("I")] 
         $IPList
     )
     #include options for different formats of fake IPs
     
     #this could be made more efficient for larger files
     $RequiredLength = ((Get-Content $IPList | Measure-Object -Line).Lines).ToString().Length
-    $formatter = "{0:d" + $FakeIPLength + "}"
+    #$formatter = "{0:d" + $FakeIPLength + "}"
     $FakeIPList = $IPList + "Key"
     $IPNum = 0
     If (Test-Path $FakeIPList) { Remove-Item $FakeIPList }

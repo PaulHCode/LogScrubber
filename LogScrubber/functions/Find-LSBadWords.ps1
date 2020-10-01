@@ -22,19 +22,16 @@ Function Find-LSBadWords {
             ValueFromPipeline = $true,
             Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [Alias("N")] 
         $LogFileName,
         [Parameter(Mandatory = $true, 
             ValueFromPipeline = $false,
             Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [Alias("Bad")] 
         $BadWordFile,
         [Parameter(Mandatory = $true, 
             ValueFromPipeline = $false,
             Position = 2)]
         [ValidateNotNullOrEmpty()]
-        [Alias("BadKey")] 
         $BadWordKeyFile
     )
     #    If(Test-Path ($LogFileName+"-BadWords")){rm ($LogFileName+"-BadWords") -Force}
